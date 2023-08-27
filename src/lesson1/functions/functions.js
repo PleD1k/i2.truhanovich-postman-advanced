@@ -14,3 +14,7 @@ const alert = () => {
 console.log(alertCounter)
 alert();
 console.log(alertCounter)
+
+const getAlerts = () => {
+    return alertCounter;
+}

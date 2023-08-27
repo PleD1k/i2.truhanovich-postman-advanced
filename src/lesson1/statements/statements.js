@@ -7,6 +7,4 @@ if (condition < 5) {
 }
  else {
  console.log('Hmm, where am I?')
-} //else {
-//     console.log('Hmm, where am I')
-// }
+}

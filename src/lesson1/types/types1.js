@@ -30,5 +30,5 @@ console.dir(typeof(NaN));
 
 // console.dir(typeof(undefined));
 
-console.dir(typeof({}));
-console.dir(typeof([]));
+// console.dir(typeof({}));
+// console.dir(typeof([]));

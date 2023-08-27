@@ -10,4 +10,4 @@ const object =  {
     }
 }
 
-console.dir(object);
+console.dir(object.);

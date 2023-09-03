@@ -1,0 +1,299 @@
+{
+	"info": {
+		"_postman_id": "9e5740b3-4d68-48bd-b9c9-00ec227b248f",
+		"name": "Homework#2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20718059"
+	},
+	"item": [
+		{
+			"name": "Task #1 - Find Difference",
+			"item": [
+				{
+					"name": "Find Difference",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"const lodash = require('lodash');\r",
+									"\r",
+									"function calculateDifference(array1, array2) {\r",
+									"   return lodash.difference(array1, array2);\r",
+									"}\r",
+									"\r",
+									"const names1 = ['Anastasia', 'Svetlana', 'Nikita', 'Viktar', 'Egor'];\r",
+									"const names2 = ['Svetlana', 'Egor', 'Nikita'];\r",
+									"\r",
+									"const result = calculateDifference(names1, names2);\r",
+									"\r",
+									"pm.request.url += `?functionResult=${JSON.stringify(result)}`;\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "httpbin.org/get",
+							"host": [
+								"httpbin",
+								"org"
+							],
+							"path": [
+								"get"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task #2 - Create test",
+			"item": [
+				{
+					"name": "Create test",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment');\r",
+									"\r",
+									"const currentDate = moment().format('YYYY-MM-DD');\r",
+									"\r",
+									"const randomString = Math.random().toString(36).substring(7);\r",
+									"const guid = pm.variables.replaceIn(\"{{$guid}}\");\r",
+									"\r",
+									"pm.environment.set('date', currentDate);\r",
+									"pm.environment.set('guid', guid);\r",
+									"pm.environment.set('randomString', randomString);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const Ajv = require('ajv');\r",
+									"\r",
+									"const responseSchema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"args\": { \"type\": \"object\" },\r",
+									"        \"data\": {\r",
+									"            \"type\": \"object\",\r",
+									"            \"properties\": {\r",
+									"                \"date\": { \"type\": \"string\" },\r",
+									"                \"guid\": { \"type\": \"string\" },\r",
+									"                \"randomString\": { \"type\": \"string\" }\r",
+									"            },\r",
+									"            \"required\": [\"date\", \"guid\", \"randomString\"]\r",
+									"        },\r",
+									"        \"files\": { \"type\": \"object\" },\r",
+									"        \"form\": { \"type\": \"object\" },\r",
+									"        \"headers\": {\r",
+									"            \"type\": \"object\",\r",
+									"            \"required\": [\"x-forwarded-proto\", \"x-forwarded-port\", \"host\", \"x-amzn-trace-id\", \"content-length\", \"content-type\", \"user-agent\", \"accept\", \"postman-token\", \"accept-encoding\", \"cookie\"],\r",
+									"            \"properties\": {\r",
+									"                \"x-forwarded-proto\": { \"type\": \"string\" },\r",
+									"                \"x-forwarded-port\": { \"type\": \"string\" },\r",
+									"                \"host\": { \"type\": \"string\" },\r",
+									"                \"x-amzn-trace-id\": { \"type\": \"string\" },\r",
+									"                \"content-length\": { \"type\": \"string\" },\r",
+									"                \"content-type\": { \"type\": \"string\" },\r",
+									"                \"user-agent\": { \"type\": \"string\" },\r",
+									"                \"accept\": { \"type\": \"string\" },\r",
+									"                \"postman-token\": { \"type\": \"string\" },\r",
+									"                \"accept-encoding\": { \"type\": \"string\" },\r",
+									"                \"cookie\": { \"type\": \"string\" }\r",
+									"            }\r",
+									"        },\r",
+									"        \"json\": {\r",
+									"            \"type\": \"object\",\r",
+									"            \"properties\": {\r",
+									"                \"date\": { \"type\": \"string\" },\r",
+									"                \"guid\": { \"type\": \"string\" },\r",
+									"                \"randomString\": { \"type\": \"string\" }\r",
+									"            },\r",
+									"            \"required\": [\"date\", \"guid\", \"randomString\"]\r",
+									"        },\r",
+									"        \"url\": { \"type\": \"string\" }\r",
+									"    },\r",
+									"    \"required\": [\"args\", \"data\", \"headers\", \"url\"]\r",
+									"};\r",
+									"\r",
+									"const responseData = pm.response.json();\r",
+									"const ajv = new Ajv();\r",
+									"const validate = ajv.compile(responseSchema);\r",
+									"\r",
+									"pm.test('Проверка схемы JSON-ответа', function () {\r",
+									"    pm.expect(validate(responseData)).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"{{date}}\",\r\n    \"guid\": \"{{guid}}\",\r\n    \"randomString\": \"{{randomString}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://postman-echo.com/post",
+							"protocol": "https",
+							"host": [
+								"postman-echo",
+								"com"
+							],
+							"path": [
+								"post"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task #3 - Morty",
+			"item": [
+				{
+					"name": "Test Mory_Human",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'https://rickandmortyapi.com/api/character/',\r",
+									"    method: 'GET',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json',\r",
+									"    },\r",
+									"}, function (err, response) {\r",
+									"    if (err) {\r",
+									"        console.error(err);\r",
+									"    } else {\r",
+									"        pm.test(\"Статус кода 1-го запроса - 200\", function () {\r",
+									"            pm.response.to.have.status(200);\r",
+									"        });\r",
+									"\r",
+									"        const responseBody = response.json();\r",
+									"        const mortySmithCharacter = responseBody.results.find(character => character.name === \"Morty Smith\");\r",
+									"\r",
+									"        if (mortySmithCharacter) {\r",
+									"            const mortySmithId = mortySmithCharacter.id;\r",
+									"\r",
+									"            pm.sendRequest({\r",
+									"                url: `https://rickandmortyapi.com/api/character/${mortySmithId + 1}`,\r",
+									"                method: 'GET',\r",
+									"            }, function (err, response) {\r",
+									"                if (err) {\r",
+									"                    console.error(err);\r",
+									"                } else {\r",
+									"                    pm.test(\"Статус кода 2-го запроса - 200\", function () {\r",
+									"                        pm.response.to.have.status(200);\r",
+									"                    });\r",
+									"\r",
+									"                    const responseBody = response.json();\r",
+									"                    pm.test(\"Персонаж - Человек\", function () {\r",
+									"                        pm.expect(responseBody.species).to.equal(\"Human\");\r",
+									"                    });\r",
+									"\r",
+									"                    pm.test(\"Имя - строка\", function () {\r",
+									"                        pm.expect(responseBody.name).to.be.a('string');\r",
+									"                    });\r",
+									"                }\r",
+									"            });\r",
+									"        }\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://rickandmortyapi.com/api/character/",
+							"protocol": "https",
+							"host": [
+								"rickandmortyapi",
+								"com"
+							],
+							"path": [
+								"api",
+								"character",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task #4 - .cvsRandom",
+			"item": [
+				{
+					"name": "Get_info_pers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://rickandmortyapi.com/api/character/{{Character ID}}",
+							"protocol": "https",
+							"host": [
+								"rickandmortyapi",
+								"com"
+							],
+							"path": [
+								"api",
+								"character",
+								"{{Character ID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

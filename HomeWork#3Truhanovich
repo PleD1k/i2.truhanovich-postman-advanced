@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "5e3773ab-3b50-4c15-97a5-744b48ed8055",
+		"name": "WorkShop#3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20718059"
+	},
+	"item": [
+		{
+			"name": "AllPokemon",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"if (jsonData.results) {\r",
+							"    pm.collectionVariables.set(\"pokemonResults\", JSON.stringify(jsonData.results));\r",
+							"}\r",
+							"\r",
+							"let pikachuUrl = null;\r",
+							"for (let i = 0; i < jsonData.results.length; i++) {\r",
+							"    if (jsonData.results[i].name === \"pikachu\") {\r",
+							"        pikachuUrl = jsonData.results[i].url;\r",
+							"        break;\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"if (pikachuUrl) {\r",
+							"    pm.collectionVariables.set(\"pikachuUrl\", pikachuUrl);\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://pokeapi.co/api/v2/pokemon/?limit=30",
+					"protocol": "https",
+					"host": [
+						"pokeapi",
+						"co"
+					],
+					"path": [
+						"api",
+						"v2",
+						"pokemon",
+						""
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "30"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PikachuInfo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"console.log(`Pokemon Type: ${jsonData.types[0].type.name}`);\r",
+							"\r",
+							"pm.sendRequest(\"https://pokeapi.co/api/v2/gender/male\", function (err, response) {\r",
+							"    if (err) {\r",
+							"        console.error(err);\r",
+							"        return;\r",
+							"    }\r",
+							"    \r",
+							"    let genderData = response.json();\r",
+							"\r",
+							"    let pikachuUrl = pm.collectionVariables.get(\"pikachuUrl\");\r",
+							"    \r",
+							"    pm.test(\"Pikachu is male\", function () {\r",
+							"        pm.expect(genderData.pokemon_species_details.some(function (species) {\r",
+							"            return species.pokemon_species.name === \"pikachu\" && species.pokemon_species.url === \"https://pokeapi.co/api/v2/pokemon-species/25/\";\r",
+							"        })).to.be.true;\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pikachuUrl}}",
+					"host": [
+						"{{pikachuUrl}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
